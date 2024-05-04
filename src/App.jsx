@@ -1,10 +1,7 @@
 import "./styles.css";
+import { jobData } from "./data/jobData";
 
 export default function App() {
-  return (
-    <div className="App">
-      <h1>Hello CodeSandbox</h1>
-      <h2>Start editing to see some magic happen!</h2>
-    </div>
-  );
+  console.log(jobData);
+  return <div className="App">Candidate Application Form</div>;
 }
