@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { Box, Grid, CircularProgress } from "@mui/material";
 import { JobCard, Filters } from "../../components";
 import { getJobListing } from "../../api";
+import { useSelector } from "react-redux";
+import { selectFilter } from "../../redux/filtersSlice";
 
 // Debouncing Function
 function debounce(func, timeout) {
@@ -22,6 +24,14 @@ const JobListing = () => {
   const [filteredData, setFilteredData] = useState(null);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
+  const filters = useSelector(selectFilter);
+  const filtersApplied =
+    filters.role ||
+    filters.employees ||
+    filters.experience ||
+    filters.remote ||
+    filters.salary ||
+    filters.companyName;
 
   const fetchData = async (pageNumber) => {
     setLoading(true);
@@ -66,8 +76,6 @@ const JobListing = () => {
     setFilteredData(filteredJobs);
   };
 
-  console.log(filteredData, jobData);
-
   const handleScroll = () => {
     const container = containerRef.current;
 
@@ -82,7 +90,7 @@ const JobListing = () => {
   };
 
   useEffect(() => {
-    const debouncedHandleScroll = debounce(handleScroll, 150); // Using debouncing for limitimg the number of api calls while scrolling
+    const debouncedHandleScroll = debounce(handleScroll, 150); // Using debouncing for limiting the number of API calls while scrolling
     const container = containerRef.current;
     if (container) {
       container.addEventListener("scroll", debouncedHandleScroll);
@@ -99,6 +107,21 @@ const JobListing = () => {
     fetchData(page);
   }, []);
 
+  useEffect(() => {
+    // Check if filters are applied
+    const filtersApplied =
+      filters.role ||
+      filters.employees ||
+      filters.experience ||
+      filters.remote ||
+      filters.salary ||
+      filters.companyName;
+
+    if (filtersApplied) {
+      handleFilterChange(filters);
+    }
+  }, [filters, jobData]);
+
   return (
     <Box>
       <Filters jobData={jobData} onFilterChange={handleFilterChange} />
@@ -113,17 +136,15 @@ const JobListing = () => {
           alignItems={"flex-start"}
         >
           {/**Showing Data from API, when Filters not Selected and No data when no Filter Data is Available */}
-          {jobData ? (
-            filteredData && filteredData?.length > 0 ? (
-              <JobCard data={filteredData} />
-            ) : filteredData && filteredData?.length === 0 ? (
-              <div className="no-data">
-                <h2>No Jobs Available for this Category at the Moment</h2>
-                <p>You can try to change the Filters.</p>
-              </div>
-            ) : (
-              <JobCard data={jobData?.jdList} />
-            )
+          {jobData && !filtersApplied ? (
+            <JobCard data={jobData?.jdList} />
+          ) : filteredData && filteredData?.length > 0 ? (
+            <JobCard data={filteredData} />
+          ) : filteredData && filteredData?.length === 0 ? (
+            <div className="no-data">
+              <h2>No Jobs Available for this Category at the Moment</h2>
+              <p>You can try to change the Filters.</p>
+            </div>
           ) : (
             <Box
               style={{
