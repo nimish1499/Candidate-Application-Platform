@@ -10,7 +10,6 @@ import {
 import styles from "./jobCard.module.css";
 
 const JobCard = ({ data = [] }) => {
-  console.log(data);
   return (
     <>
       {data.jdList.map((jobItem, index) => (
