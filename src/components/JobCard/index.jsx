@@ -9,10 +9,15 @@ import {
 
 import styles from "./jobCard.module.css";
 
+// Function to make first letter of a word as Capital
+function capital(str) {
+  return str ? str?.charAt(0).toUpperCase() + str?.slice(1) : "";
+}
+
 const JobCard = ({ data = [] }) => {
   return (
     <>
-      {data.jdList.map((jobItem, index) => (
+      {data?.map((jobItem, index) => (
         <Grid
           item
           xs={12}
@@ -29,8 +34,12 @@ const JobCard = ({ data = [] }) => {
           >
             <div className={styles.dateMatch}>
               <div className={styles.dates}>
-                <Typography variant="body2" color="black" className="date">
-                  Posted ⏳ 2{jobItem?.daysAgo ?? "1"} days ago
+                <Typography
+                  variant="body2"
+                  color="black"
+                  className={styles.date}
+                >
+                  ⏳ Posted 2{jobItem?.daysAgo ?? "1"} days ago
                 </Typography>
               </div>
             </div>
@@ -48,19 +57,35 @@ const JobCard = ({ data = [] }) => {
               >
                 <img src={jobItem?.logoUrl} alt="logo" width={25} height={40} />
                 <div className={styles.companyInformation}>
-                  <h3>{jobItem?.companyName ?? ""}</h3>
-                  <h2>{jobItem?.jobRole ?? ""}</h2>
-                  <p className={styles.cardText}>{jobItem?.location ?? ""}</p>
+                  <h3>
+                    {jobItem?.companyName ? capital(jobItem?.companyName) : ""}
+                  </h3>
+                  <h2>{jobItem?.jobRole ? capital(jobItem?.jobRole) : ""}</h2>
+                  <p className={styles.cardText}>
+                    {jobItem?.location ? capital(jobItem?.location) : ""}
+                  </p>
                 </div>
               </Box>
               <Typography variant="body2" className={styles.salaryRange}>
-                Estimated Salary: {jobItem?.minJdSalary ?? 0}-
-                {jobItem?.maxJdSalary ?? "N/A"} ✅
+                Estimated Salary:{" "}
+                {jobItem?.minJdSalary ? `₹${jobItem?.minJdSalary}` : 0}-
+                {jobItem?.maxJdSalary ? `${jobItem?.maxJdSalary} LPA` : "N/A"}{" "}
+                ✅
               </Typography>
               <div className={styles.description}>
-                <Typography variant="body2">
-                  {jobItem?.jobDetailsFromCompany}
-                </Typography>
+                {jobItem?.jobDetailsFromCompany && (
+                  <>
+                    <Typography variant="body1" style={{ fontWeight: "500" }}>
+                      About Company:
+                    </Typography>
+                    <Typography>
+                      <strong>About us</strong>
+                    </Typography>
+                    <Typography variant="body2">
+                      {jobItem?.jobDetailsFromCompany}
+                    </Typography>
+                  </>
+                )}
               </div>
               <div className={styles.viewMore}>
                 <a href={jobItem?.jdLink}>View Job</a>
@@ -85,6 +110,10 @@ const JobCard = ({ data = [] }) => {
                   color: "rgb(0, 0, 0)",
                   fontWeight: "500",
                   padding: "8px 18px",
+                  "&:hover": {
+                    backgroundColor: "rgb(85, 239, 196)",
+                    color: "rgb(0, 0, 0)",
+                  },
                 }}
               >
                 ⚡ Easy Apply

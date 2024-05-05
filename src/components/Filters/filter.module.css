@@ -1,0 +1,39 @@
+.filtersContainer {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.filter {
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  margin-inline: 0.2rem;
+  flex: 1; /* Make each filter take up equal space */
+  margin-bottom: 0.5rem; /* Add some space between filters */
+}
+
+.filter input,
+.filter select {
+  border: none;
+  outline: none;
+  width: 100%;
+}
+
+.filter input::placeholder,
+.filter select {
+  font-size: 0.8rem;
+  font-family: "Poppins", sans-serif;
+  color: gray;
+}
+
+@media screen and (max-width: 600px) {
+  .filtersContainer {
+    flex-direction: column;
+  }
+
+  .filter {
+    width: 100%;
+  }
+}

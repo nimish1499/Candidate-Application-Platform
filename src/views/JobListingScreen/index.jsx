@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Box, Grid, CircularProgress } from "@mui/material";
-import JobCard from "../../components/JobCard";
+import { JobCard, Filters } from "../../components";
 import { getJobListing } from "../../api";
+import { useSelector } from "react-redux";
+import { selectFilter } from "../../redux/filtersSlice";
 
 // Debouncing Function
 function debounce(func, timeout) {
@@ -19,8 +21,17 @@ function debounce(func, timeout) {
 const JobListing = () => {
   const [page, setPage] = useState(0); // offset
   const [jobData, setJobData] = useState(null);
+  const [filteredData, setFilteredData] = useState(null);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
+  const filters = useSelector(selectFilter);
+  const filtersApplied =
+    filters.role ||
+    filters.employees ||
+    filters.experience ||
+    filters.remote ||
+    filters.salary ||
+    filters.companyName;
 
   const fetchData = async (pageNumber) => {
     setLoading(true);
@@ -41,6 +52,30 @@ const JobListing = () => {
     setLoading(false);
   };
 
+  const handleFilterChange = (filters) => {
+    // Apply filters to job data
+    const filteredJobs = jobData?.jdList?.filter((job) => {
+      return (
+        (!filters?.role ||
+          job?.jobRole?.toLowerCase() === filters.role?.toLowerCase()) &&
+        (!filters?.employees || job?.employees === filters?.employees) &&
+        (!filters?.experience ||
+          (job?.minExp <= filters?.experience &&
+            job?.maxExp >= filters?.experience)) &&
+        (!filters?.remote ||
+          job.location
+            ?.toLowerCase()
+            .includes(filters.remote?.toLowerCase())) &&
+        (!filters.salary || job.minJdSalary >= filters.salary) &&
+        (!filters.companyName ||
+          job.companyName
+            .toLowerCase()
+            .includes(filters.companyName.toLowerCase()))
+      );
+    });
+    setFilteredData(filteredJobs);
+  };
+
   const handleScroll = () => {
     const container = containerRef.current;
 
@@ -55,7 +90,7 @@ const JobListing = () => {
   };
 
   useEffect(() => {
-    const debouncedHandleScroll = debounce(handleScroll, 150); // Using debouncing for limitimg the number of api calls while scrolling
+    const debouncedHandleScroll = debounce(handleScroll, 150); // Using debouncing for limiting the number of API calls while scrolling
     const container = containerRef.current;
     if (container) {
       container.addEventListener("scroll", debouncedHandleScroll);
@@ -72,8 +107,24 @@ const JobListing = () => {
     fetchData(page);
   }, []);
 
+  useEffect(() => {
+    // Check if filters are already applied / persist after reload
+    const filtersApplied =
+      filters.role ||
+      filters.employees ||
+      filters.experience ||
+      filters.remote ||
+      filters.salary ||
+      filters.companyName;
+
+    if (filtersApplied) {
+      handleFilterChange(filters);
+    }
+  }, [filters, jobData]);
+
   return (
     <Box>
+      <Filters jobData={jobData} onFilterChange={handleFilterChange} />
       <Box
         ref={containerRef}
         style={{ overflowY: "scroll", maxHeight: "80vh", position: "relative" }}
@@ -84,8 +135,16 @@ const JobListing = () => {
           justifyContent={"center"}
           alignItems={"flex-start"}
         >
-          {jobData ? (
-            <JobCard data={jobData} />
+          {/**Showing Data from API, when Filters not Selected and No data when no Filter Data is Available */}
+          {jobData && !filtersApplied ? (
+            <JobCard data={jobData?.jdList} />
+          ) : filteredData && filteredData?.length > 0 ? (
+            <JobCard data={filteredData} />
+          ) : filteredData && filteredData?.length === 0 ? (
+            <div className="no-data">
+              <h2>No Jobs Available for this Category at the Moment</h2>
+              <p>You may explore different options by adjusting the filters.</p>
+            </div>
           ) : (
             <Box
               style={{
