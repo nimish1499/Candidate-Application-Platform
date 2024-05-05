@@ -112,9 +112,14 @@ const JobListing = () => {
           justifyContent={"center"}
           alignItems={"flex-start"}
         >
+          {/**Showing Data from API, when Filters not Selected and No data when no Filter Data is Available */}
           {jobData ? (
-            filteredData ? (
+            filteredData && filteredData?.length > 0 ? (
               <JobCard data={filteredData} />
+            ) : filteredData && filteredData?.length === 0 ? (
+              <div className="no-data">
+                <h2>No Jobs Available for this Category at the Moment</h2>
+              </div>
             ) : (
               <JobCard data={jobData?.jdList} />
             )
