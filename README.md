@@ -2,6 +2,9 @@
 
 This React component displays job listings fetched from an API and allows users to filter the listings based on various criteria.
 
+## Deployment Link
+The live version of the project - https://application-job-listing.netlify.app/
+
 ## Requirements
 - **Job Cards:** Each job listing is displayed as a card containing the following information:
   - Job title
