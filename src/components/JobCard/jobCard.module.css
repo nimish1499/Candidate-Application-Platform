@@ -12,6 +12,8 @@
 
 .cardItem a {
   font-size: 14px;
+  text-decoration: none;
+  color: #095c94;
 }
 
 .description {
@@ -26,7 +28,7 @@
 
 .cardItem:hover {
   transition: all 0.2s ease-in-out;
-  transform: scale(1.01);
+  transform: scale(1.02);
 }
 
 .cardText {
