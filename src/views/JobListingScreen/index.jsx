@@ -108,7 +108,7 @@ const JobListing = () => {
   }, []);
 
   useEffect(() => {
-    // Check if filters are applied
+    // Check if filters are already applied / persist after reload
     const filtersApplied =
       filters.role ||
       filters.employees ||
@@ -143,7 +143,7 @@ const JobListing = () => {
           ) : filteredData && filteredData?.length === 0 ? (
             <div className="no-data">
               <h2>No Jobs Available for this Category at the Moment</h2>
-              <p>You can try to change the Filters.</p>
+              <p>You may explore different options by adjusting the filters.</p>
             </div>
           ) : (
             <Box

@@ -9,6 +9,11 @@ import {
 
 import styles from "./jobCard.module.css";
 
+// Function to make first letter of a word as Capital
+function capital(str) {
+  return str ? str?.charAt(0).toUpperCase() + str?.slice(1) : "";
+}
+
 const JobCard = ({ data = [] }) => {
   return (
     <>
@@ -34,7 +39,7 @@ const JobCard = ({ data = [] }) => {
                   color="black"
                   className={styles.date}
                 >
-                  Posted ⏳ 2{jobItem?.daysAgo ?? "1"} days ago
+                  ⏳ Posted 2{jobItem?.daysAgo ?? "1"} days ago
                 </Typography>
               </div>
             </div>
@@ -52,19 +57,20 @@ const JobCard = ({ data = [] }) => {
               >
                 <img src={jobItem?.logoUrl} alt="logo" width={25} height={40} />
                 <div className={styles.companyInformation}>
-                  <h3>{jobItem?.companyName ?? ""}</h3>
-                  <h2>{jobItem?.jobRole ?? ""}</h2>
+                  <h3>
+                    {jobItem?.companyName ? capital(jobItem?.companyName) : ""}
+                  </h3>
+                  <h2>{jobItem?.jobRole ? capital(jobItem?.jobRole) : ""}</h2>
                   <p className={styles.cardText}>
-                    {jobItem?.location
-                      ? jobItem.location.charAt(0).toUpperCase() +
-                        jobItem.location.slice(1)
-                      : ""}
+                    {jobItem?.location ? capital(jobItem?.location) : ""}
                   </p>
                 </div>
               </Box>
               <Typography variant="body2" className={styles.salaryRange}>
-                Estimated Salary: {jobItem?.minJdSalary ?? 0}-
-                {jobItem?.maxJdSalary ?? "N/A"} ✅
+                Estimated Salary:{" "}
+                {jobItem?.minJdSalary ? `₹${jobItem?.minJdSalary}` : 0}-
+                {jobItem?.maxJdSalary ? `${jobItem?.maxJdSalary} LPA` : "N/A"}{" "}
+                ✅
               </Typography>
               <div className={styles.description}>
                 {jobItem?.jobDetailsFromCompany && (
