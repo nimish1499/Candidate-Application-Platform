@@ -55,14 +55,14 @@ This React component displays job listings fetched from an API and allows users 
 - **Performance:** Have performance considerations been taken into account?
 
 ## Installation and Running
+In the project directory, you can 
+
 1. Clone the repository
 2. cd [Project Name]
 3. npm install
 4. npm run dev
 
 
-In the project directory, you can run:
 
-### `npm install`
 
-### `npm start`
+
