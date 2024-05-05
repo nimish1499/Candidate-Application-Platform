@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from "react";
-
+import { useDispatch, useSelector } from "react-redux";
+import { setFilter, selectFilter } from "../../redux/filtersSlice";
 import styles from "./filter.module.css";
 
-const Filters = ({ jobData, onFilterChange }) => {
-  const [filters, setFilters] = useState({
-    role: "",
-    employees: "",
-    experience: "",
-    remote: "",
-    salary: "",
-    companyName: "",
-  });
+const Filters = ({ onFilterChange }) => {
+  const dispatch = useDispatch();
+  const filters = useSelector(selectFilter);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters((prevFilters) => ({
+    setFilter((prevFilters) => ({
       ...prevFilters,
       [name]: value,
     }));
+    dispatch(setFilter({ name, value }));
   };
 
   useEffect(() => {
@@ -27,20 +23,25 @@ const Filters = ({ jobData, onFilterChange }) => {
   return (
     <div className={styles.filtersContainer}>
       <div className={styles.filter}>
-        <select name="role" onChange={handleFilterChange}>
+        <select name="role" onChange={handleFilterChange} value={filters.role}>
           <option value="">Roles</option>
           <option value="Backend">Backend</option>
           <option value="Frontend">Frontend</option>
           <option value="Fullstack">Fullstack</option>
           <option value="Flutter">Flutter</option>
           <option value="Android">Android</option>
+          <option value="Ios">Ios</option>
           <option value="Legal">Legal</option>
           <option value="Finance">Finance</option>
         </select>
       </div>
 
       <div className={styles.filter}>
-        <select name="employees" onChange={handleFilterChange}>
+        <select
+          name="employees"
+          onChange={handleFilterChange}
+          value={filters.employees}
+        >
           <option value="">Number Of Employees</option>
           <option value="1-10">1-10</option>
           <option value="11-20">11-20</option>
@@ -53,7 +54,11 @@ const Filters = ({ jobData, onFilterChange }) => {
       </div>
 
       <div className={styles.filter}>
-        <select name="experience" onChange={handleFilterChange}>
+        <select
+          name="experience"
+          onChange={handleFilterChange}
+          value={filters.experience}
+        >
           <option value="">Experience</option>
           <option value="1">1 Year</option>
           <option value="2">2 Years</option>
@@ -69,7 +74,11 @@ const Filters = ({ jobData, onFilterChange }) => {
       </div>
 
       <div className={styles.filter}>
-        <select name="remote" onChange={handleFilterChange}>
+        <select
+          name="remote"
+          onChange={handleFilterChange}
+          value={filters.remote}
+        >
           <option value="">Remote</option>
           <option value="Hybrid">Hybrid</option>
           <option value="On-site">On-site</option>
@@ -77,7 +86,11 @@ const Filters = ({ jobData, onFilterChange }) => {
       </div>
 
       <div className={styles.filter}>
-        <select name="salary" onChange={handleFilterChange}>
+        <select
+          name="salary"
+          onChange={handleFilterChange}
+          value={filters.salary}
+        >
           <option value="">Minimum Base Pay Salary</option>
           <option value="0">0L</option>
           <option value="10">10L</option>

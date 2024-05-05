@@ -119,6 +119,7 @@ const JobListing = () => {
             ) : filteredData && filteredData?.length === 0 ? (
               <div className="no-data">
                 <h2>No Jobs Available for this Category at the Moment</h2>
+                <p>You can try to change the Filters.</p>
               </div>
             ) : (
               <JobCard data={jobData?.jdList} />
