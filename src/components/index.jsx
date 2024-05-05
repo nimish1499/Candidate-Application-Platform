@@ -1,2 +1,3 @@
 import JobCard from "./JobCard";
-export { JobCard };
+import Filters from "./Filters";
+export { JobCard, Filters };

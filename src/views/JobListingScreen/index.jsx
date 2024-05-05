@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Box, Grid, CircularProgress } from "@mui/material";
-import JobCard from "../../components/JobCard";
+import { JobCard, Filters } from "../../components";
 import { getJobListing } from "../../api";
 
 // Debouncing Function
@@ -19,6 +19,7 @@ function debounce(func, timeout) {
 const JobListing = () => {
   const [page, setPage] = useState(0); // offset
   const [jobData, setJobData] = useState(null);
+  const [filteredData, setFilteredData] = useState(null);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
 
@@ -40,6 +41,32 @@ const JobListing = () => {
     }
     setLoading(false);
   };
+
+  const handleFilterChange = (filters) => {
+    // Apply filters to job data
+    const filteredJobs = jobData?.jdList?.filter((job) => {
+      return (
+        (!filters?.role ||
+          job?.jobRole?.toLowerCase() === filters.role?.toLowerCase()) &&
+        (!filters?.employees || job?.employees === filters?.employees) &&
+        (!filters?.experience ||
+          (job?.minExp <= filters?.experience &&
+            job?.maxExp >= filters?.experience)) &&
+        (!filters?.remote ||
+          job.location
+            ?.toLowerCase()
+            .includes(filters.remote?.toLowerCase())) &&
+        (!filters.salary || job.minJdSalary >= filters.salary) &&
+        (!filters.companyName ||
+          job.companyName
+            .toLowerCase()
+            .includes(filters.companyName.toLowerCase()))
+      );
+    });
+    setFilteredData(filteredJobs);
+  };
+
+  console.log(filteredData, jobData);
 
   const handleScroll = () => {
     const container = containerRef.current;
@@ -74,6 +101,7 @@ const JobListing = () => {
 
   return (
     <Box>
+      <Filters jobData={jobData} onFilterChange={handleFilterChange} />
       <Box
         ref={containerRef}
         style={{ overflowY: "scroll", maxHeight: "80vh", position: "relative" }}
@@ -85,7 +113,11 @@ const JobListing = () => {
           alignItems={"flex-start"}
         >
           {jobData ? (
-            <JobCard data={jobData} />
+            filteredData ? (
+              <JobCard data={filteredData} />
+            ) : (
+              <JobCard data={jobData?.jdList} />
+            )
           ) : (
             <Box
               style={{
